@@ -113,8 +113,23 @@ let userData = {
 
 // console.log(addTwoNumbers(3, 4));
 
+// Asegurarce que la cancion empiece del principio
 const playSong = (id) => {
+  const song = userData?.songs.find((song) => song.id === id);
+  audio.src = song.src;
+  audio.title = song.title;
 
+  if (userData?.currentSong === null || userData?.currentSong.id !== song.id) {
+    audio.currentTime = 0;
+  } else {
+    audio.currentTime = userData?.songCurrentTime;
+  }
+
+  userData.currentSong = song;
+
+  playButton.classList.add("playing");
+  // metodo play() de la API
+  audio.play();
 }
 
 const renderSongs = (array) => {
@@ -133,6 +148,16 @@ const renderSongs = (array) => {
   playlistSongs.innerHTML = songsHTML;
 }
 
+// Funcionalidad al boton de reproduccion
+playButton.addEventListener('click', () =>{
+  if (userData?.currentSong === null) {
+    playSong(userData?.songs[0].id);
+  } else {
+    playSong(userData?.currentSong.id)
+  }
+});
+
+// Ordenar alfabeticamante 
 const sortSongs = () => {
   userData?.songs.sort((a, b) => {
     if (a.title < b.title) {
